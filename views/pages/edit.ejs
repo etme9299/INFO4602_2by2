@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head'); %>
+</head>
+
+<body style=<%- `background-color:${theme.bg_color}` %>>
+<header>
+  <%- include('../partials/header'); %>
+</header>
+
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" style="margin: auto;" id="infoModalLabel">Graph Info</h3>
+    </div>
+      <div class="modal-body">
+        <h4 style="text-align: center; color: #5bc0de;"> Instructions </h4>
+        
+        <p> <strong>For each member</strong> in the group, place where you think they belong on the graph by <strong>clicking</strong> on the screen.</p>
+
+
+        <h4 style="text-align: center; color: #5bc0de;"> Descriptions of Axes </h4>
+        <p><strong><%= graphInfo.axis[0] %>:</strong> <%= graphInfo.descriptions[0] %></p>
+        <p><strong><%= graphInfo.axis[2] %>:</strong> <%= graphInfo.descriptions[2] %></p>
+        <p><strong><%= graphInfo.axis[1] %>:</strong> <%= graphInfo.descriptions[1] %></p>
+        <p><strong><%= graphInfo.axis[3] %>:</strong> <%= graphInfo.descriptions[3] %></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin: auto;">
+          <i class="fas fa-times"></i> Close 
+        </button>
+      </div>
+  </div>
+  </div>
+</div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h3 class="modal-title" style="margin: auto;" >Welcome to 2by2</h3>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <img id="modal_image" src="/assets/logo.png" style="width: 60%; height: 60%; padding-bottom: 10px;"/>
+                
+                <div id="the-basics">
+                    <input class="typeahead tt-query" type="text" placeholder="Your Name" id="input_name">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary"  id = "modal_submit_button"  disabled="true" onclick="submit_modal()" style="margin: auto;">Submit</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <h1 class="graph-title" style="text-align:center;"><%=graphInfo.name%></h1>
+    <div class="chart-container" id="chart-container" style="position: relative;  margin: auto;">
+      <canvas id="myChart"></canvas>
+      <button type="button" class="btn btn-secondary" id = "skip_button" onclick="skip_name()">Skip</button>
+      <span onclick="show_info()" id="info_btn_span">
+        <i class="fas fa-info-circle" id="info_btn"></i>
+      </span>
+      
+      <!-- Axis Labels -->
+      <p class="axis-label" id="posx-label" data-placement="left" data-toggle="tooltip"> <%= graphInfo.axis[0] %> </p>
+      <p class="axis-label" id="posy-label" data-placement="bottom" data-toggle="tooltip"> <%= graphInfo.axis[1] %> </p>
+      <p class="axis-label" id="negx-label" data-placement="right" data-toggle="tooltip"> <%= graphInfo.axis[2] %> </p>
+      <p class="axis-label" id="negy-label" data-placement="top" data-toggle="tooltip"> <%= graphInfo.axis[3] %> </p>
+
+    </div>
+
+   
+
+    <table id="bottom_bar" style="width:80vw; position: relative;  margin: auto;  border-collapse:collapse; margin-top: 10px;">
+      <tr style="height:35px;">
+          <td style="width:45%;  vertical-align: top; text-align:right">
+            <p id="prompt_text" >Please place:</p>
+          </td>
+          <td >
+            <p>
+              <span id="current_name">
+                
+              </span>
+            </p>
+          </td>
+      </tr>
+  </table>
+
+  <div style="position: relative;  margin: auto; width:fit-content;" id="result">
+    <button style="margin:auto;" type="button" class="btn btn-primary" id="submit_all" onclick="submit_values()" disabled="true">Submit</button>
+  </div>
+
+  <div style="position: relative;  margin: auto; width:fit-content;" id="view-link-div" hidden>
+    <!-- <p style="text-align: center; color: black; font-family: sans-serif; font-weight: bold;">View Results: <a href="../edit/<%= graphInfo.code %>" style="margin-right: 8px;" id="view-link" >View Page</a> </p> -->
+    <a href="" style="text-align: center; font-family: sans-serif; font-weight: bold;" id="view-link" >View Results</a> </p>
+ 
+  </div>
+
+  
+    
+<footer>
+
+  <%- include('../partials/footer'); %>
+</footer>
+
+<script>
+
+  //Begin ugly code to get the info into clientside js
+  let graph = { id : <%- `"${graphInfo._id}"` %>,
+    name : <%- `"${graphInfo.name}"` %>,
+    code : <%- `"${graphInfo.code}"` %>,
+    posx : <%- `"${graphInfo.axis[0]}"` %>,
+    posy : <%- `"${graphInfo.axis[1]}"` %>,
+    negx : <%- `"${graphInfo.axis[2]}"` %>,
+    negy : <%- `"${graphInfo.axis[3]}"` %>,
+    posx_description : <%- `"${graphInfo.descriptions[0]}"` %>,
+    posy_description : <%- `"${graphInfo.descriptions[1]}"` %>,
+    negx_description : <%- `"${graphInfo.descriptions[2]}"` %>,
+    negy_description : <%- `"${graphInfo.descriptions[3]}"` %>,
+  };
+  
+  let tags = [];
+  <%for (let x in graphInfo.tags) {%>
+    <%-`tags.push({
+      name : "${graphInfo.tags[x].name}",
+      color : "${graphInfo.tags[x].color}",
+    });`%>
+  <%}%>;
+
+  console.log(tags);
+
+  let titles = ["Dummy"]; // List that keeps track of Names with first element being a dummy to deal with plotting glitch
+  let valid_names = []; // List of all names
+  for (let x in tags) {
+    titles.push(tags[x].name);
+    valid_names.push(tags[x].name);
+  }
+  let colors = ["#000000"]; // List of colors including dummy point
+  for (let x in tags) {
+    colors.push(tags[x].color);
+    //console.log(tags[x].color);
+  }
+  //End ugly code
+
+  // Setting axis tooltip labels
+  document.getElementById("posx-label").title = graph.posx_description
+  document.getElementById("posy-label").title = graph.posy_description
+  document.getElementById("negx-label").title = graph.negx_description
+  document.getElementById("negy-label").title = graph.negy_description
+
+  function submit_values(){
+    //console.log(config.data.datasets[0].data);
+    //console.log(window.input_name);
+    //console.log("name should be ",submit_name);
+    
+    //Send to server
+    let xhr = new XMLHttpRequest();
+    let url = "./";
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+
+            if (xhr.responseText == "\"Points submitted\""){
+              document.getElementById("result").innerHTML = ""
+              document.getElementById('view-link-div').removeAttribute("hidden");
+              url = '../' + graph.code;
+              console.log(url)
+              document.getElementById("view-link").href = url
+                // document.getElementById('result').innerHTML = `<h3>Your points have been submitted! See the results <a href='../${graph.code}'>here</a></h3>`;
+            } else {
+              document.getElementById('view-link-div').innerHTML = "<h3>There was an error. Please refresh and try again</h3>";
+            }
+            // Print received data from server
+            
+
+        }
+    };
+
+    data.shift(); // Deleting dummy placeholder in array
+
+    console.log("Submission data:", data);
+
+    let postData = JSON.stringify({
+        "graphID": graph.id,
+        "submitter": submit_name,
+        "data": data
+    });
+    
+    console.log(postData);
+    xhr.send(postData);
+}
+  //Here's where I insert Ethan's (beautiful) code
+  <%- include('../../public/js/edit.js'); %>
+</script>
+</body>
+</html>

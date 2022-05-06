@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head'); %>
+</head>
+<body class="container" style=<%- `background-color:${theme.bg_color}` %>>
+
+<header>
+  <%- include('../partials/header'); %>
+
+</header>
+
+<div class="modal fade" id="individual-infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" style="margin: auto;" id="infoModalLabel">Individual Breakdown</h3>
+    </div>
+      <div class="modal-body">
+        <h4 style="text-align: center; color: #5bc0de;"> Explanation </h4>
+        <p> View where each member in the group has placed you.</p>
+
+
+        <h4 style="text-align: center; color: #5bc0de;"> Descriptions of Axes </h4>
+        <p><strong><%= graphInfo.axis[0] %>:</strong> <%= graphInfo.descriptions[0] %></p>
+        <p><strong><%= graphInfo.axis[2] %>:</strong> <%= graphInfo.descriptions[2] %></p>
+        <p><strong><%= graphInfo.axis[1] %>:</strong> <%= graphInfo.descriptions[1] %></p>
+        <p><strong><%= graphInfo.axis[3] %>:</strong> <%= graphInfo.descriptions[3] %></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin: auto;">
+          <i class="fas fa-times"></i> Close 
+        </button>
+      </div>
+  </div>
+  </div>
+</div>
+
+<div class="modal fade" id="summary-infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title" style="margin: auto;" id="infoModalLabel">Group Summary</h3>
+    </div>
+      <div class="modal-body">
+        <h4 style="text-align: center; color: #5bc0de;"> Explanation </h4>
+        <p> View where each member in the group is relative to one another.</p>
+
+
+        <h4 style="text-align: center; color: #5bc0de;"> Descriptions of Axes </h4>
+        <p><strong><%= graphInfo.axis[0] %>:</strong> <%= graphInfo.descriptions[0] %></p>
+        <p><strong><%= graphInfo.axis[2] %>:</strong> <%= graphInfo.descriptions[2] %></p>
+        <p><strong><%= graphInfo.axis[1] %>:</strong> <%= graphInfo.descriptions[1] %></p>
+        <p><strong><%= graphInfo.axis[3] %>:</strong> <%= graphInfo.descriptions[3] %></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin: auto;">
+          <i class="fas fa-times"></i> Close 
+        </button>
+      </div>
+  </div>
+  </div>
+</div>
+
+  <table style="margin:auto;">
+    <h1 class="graph-title" style="text-align:center; padding-bottom: 14px;"><%=graphInfo.name%></h1>
+    <tr>
+      <th>
+        <h5 style="text-align:center">Group Summary</h3>
+      </th>
+      <th>
+        <h5 style="text-align:center">Individual Breakdown</h3>
+      </th>
+    </tr>
+    <tr>
+      <td>
+        <div class="chart-container" id="chart-container1" style="position: relative;  margin: auto;">
+          <canvas id="avgGraph"></canvas>
+          <span onclick="show_group_info()" id="info_btn_span">
+            <i class="fas fa-info-circle" id="info_btn"></i>
+          </span>
+          <!-- Axis Labels -->
+          <p class="axis-label" id="group-posx-label" data-placement="left" data-toggle="tooltip"> <%= graphInfo.axis[0] %> </p>
+          <p class="axis-label" id="group-posy-label" data-placement="bottom" data-toggle="tooltip"> <%= graphInfo.axis[1] %> </p>
+          <p class="axis-label" id="group-negx-label" data-placement="right" data-toggle="tooltip"> <%= graphInfo.axis[2] %> </p>
+          <p class="axis-label" id="group-negy-label" data-placement="top" data-toggle="tooltip"> <%= graphInfo.axis[3] %> </p>
+        </div>
+      </td>
+      <td>
+        <div class="chart-container" id="chart-container2" style="position: relative;  margin: auto;">
+          <canvas id="personalGraph"></canvas>
+          <span onclick="show_ind_info()" id="info_btn_span">
+            <i class="fas fa-info-circle" id="info_btn"></i>
+          </span>
+          <!-- Axis Labels -->
+          <p class="axis-label" id="ind-posx-label" data-placement="left" data-toggle="tooltip" title="ballsack"> <%= graphInfo.axis[0] %> </p>
+          <p class="axis-label" id="ind-posy-label" data-placement="bottom" data-toggle="tooltip"> <%= graphInfo.axis[1] %> </p>
+          <p class="axis-label" id="ind-negx-label" data-placement="right" data-toggle="tooltip"> <%= graphInfo.axis[2] %> </p>
+          <p class="axis-label" id="ind-negy-label" data-placement="top" data-toggle="tooltip"> <%= graphInfo.axis[3] %> </p>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align: center;">
+        <select id="avg_type_dropdown" onchange="update_average_graph()" style="	border: 2px solid #CCCCCC;border-radius: 8px;font-size: 20px;height: 30px;line-height: 30px;outline: medium none;width: 120px; text-align: center;">
+          <option value="avg">Average</option>
+          <option value="med">Median</option>
+          <option value="ext">Extreme</option>
+        </select>
+      </td>
+      <td>
+        <div id="the-basics" style="text-align: center;">
+          <input class="typeahead tt-query" type="text" placeholder="Search by Name" id="input_name" onfocus="document.getElementById('input_name').value = ''">
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan=2 style="padding-top: 20px;">
+        <p style="text-align: center; color: black; font-family: sans-serif; font-weight: bold;">Add Your Points: <a href="../edit/<%= graphInfo.code %>" style="margin-right: 8px;" id="link_text" >Here</a> </p>
+      </td>
+    </tr>
+  </table>
+
+
+
+</div>
+
+
+<footer>
+  <%- include('../partials/footer'); %>
+</footer>
+
+
+<script>
+
+let graph = { id : <%- `"${graphInfo._id}"` %>,
+    name : <%- `"${graphInfo.name}"` %>,
+    code : <%- `"${graphInfo.code}"` %>,
+    posx : <%- `"${graphInfo.axis[0]}"` %>,
+    posy : <%- `"${graphInfo.axis[1]}"` %>,
+    negx : <%- `"${graphInfo.axis[2]}"` %>,
+    negy : <%- `"${graphInfo.axis[3]}"` %>,
+    posx_description : <%- `"${graphInfo.descriptions[0]}"` %>,
+    posy_description : <%- `"${graphInfo.descriptions[1]}"` %>,
+    negx_description : <%- `"${graphInfo.descriptions[2]}"` %>,
+    negy_description : <%- `"${graphInfo.descriptions[3]}"` %>,
+  };
+
+  let points = [];
+  <%for (let x in graphInfo.points) {%>
+    <%-`points.push({
+      name : "${graphInfo.points[x].name}",
+      xVal : ${graphInfo.points[x].x},
+      yVal : ${graphInfo.points[x].y},
+      submittedBy : "${graphInfo.points[x].submitter}",
+    });`%>
+  <%}%>;
+
+
+  let tags = [];
+  <%for (let x in graphInfo.tags) {%>
+    <%-`tags.push({
+      name : "${graphInfo.tags[x].name}",
+      color : "${graphInfo.tags[x].color}",
+    });`%>
+  <%}%>;
+
+  let titles = ["Dummy"]; // List that keeps track of Names with first element being a dummy to deal with plotting glitch
+  let valid_names = []; // List of all names
+  for (let x in tags) {
+    titles.push(tags[x].name);
+    valid_names.push(tags[x].name);
+  }
+  let colors = ["#000000"]; // List of colors including dummy point
+  for (let x in tags) {
+    colors.push(tags[x].color);
+    //console.log(tags[x].color);
+  }
+  //End ugly code
+
+  // Setting axis tooltip labels
+  document.getElementById("ind-posx-label").title = graph.posx_description
+  document.getElementById("ind-posy-label").title = graph.posy_description
+  document.getElementById("ind-negx-label").title = graph.negx_description
+  document.getElementById("ind-negy-label").title = graph.negy_description
+
+  document.getElementById("group-posx-label").title = graph.posx_description
+  document.getElementById("group-posy-label").title = graph.posy_description
+  document.getElementById("group-negx-label").title = graph.negx_description
+  document.getElementById("group-negy-label").title = graph.negy_description
+
+  
+  <%- include('../../public/js/view.js'); %>
+</script>
+</body>
+</html>

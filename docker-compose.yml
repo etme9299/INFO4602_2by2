@@ -1,0 +1,29 @@
+version: '3.7'
+networks:
+  2by2_network:
+services:
+  2by2_mongo:
+    container_name: 2by2_mongo
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongoCommands.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - 2by2_network
+
+  2by2_app:
+    container_name: 2by2_app
+    volumes:
+      - .:/app
+    build:
+      context: .
+    depends_on:
+      - 2by2_mongo
+    ports:
+      - '8080:8080'
+    networks:
+      - 2by2_network

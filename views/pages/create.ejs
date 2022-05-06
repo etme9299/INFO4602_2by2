@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head'); %>
+</head>
+<body class= "container" style="background-color: #eeeeee;">
+
+<header>
+  <%- include('../partials/header'); %>
+</header>
+
+<div class="modal fade bd-example-modal-lg" id="2by2_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-content">
+      <div class="modal-header">
+      <h5 class="modal-title" style="margin: auto;" id="exampleModalLabel">Build a Graph</h5>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+
+        <div class="input-group" style="margin:auto; padding:0px 0px 8px 0px; width: 80%; max-width: 400px;">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Group Name</span>
+          </div>
+          <input type="text" maxlength="35" class="form-control" id="GraphName">
+        </div>
+
+        <img id="modal_image" src="/assets/2by2_blank.png" style="height:22vw; padding-bottom: 10px;"/>
+          
+          <div style="margin: auto; width: 80%;">
+            <form >
+              <div class="form-row">
+                <div class="col-md-6">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="">Left Label</span>
+                    </div>
+                    <input type="text" class="form-control"  maxlength="20" id="negx" required>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" class="form-control" placeholder="Description" id="negx-des">
+                </div>
+                
+              </div>
+
+              <div class="form-row">
+                <div class="col-md-6">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="">Right Label</span>
+                    </div>
+                    <input type="text" class="form-control"  maxlength="20" id="posx">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" class="form-control" placeholder="Description" id="posx-des">
+                </div>
+                
+              </div>
+
+              <div class="form-row">
+                <div class="col-md-6">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="">Top Label</span>
+                    </div>
+                    <input type="text" class="form-control"  maxlength="20" id="posy">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" class="form-control" placeholder="Description" id="posy-des">
+                </div>
+                
+              </div>
+
+              <div class="form-row">
+                <div class="col-md-6">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" >Bottom Label</span>
+                    </div>
+                    <input type="text" class="form-control"  maxlength="20" id="negy">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" class="form-control" placeholder="Description" id="negy-des">
+                </div>
+                
+              </div>
+              
+            </form>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary mr-auto" data-dismiss="modal">
+          <i class="fas fa-times"></i> Close 
+        </button>
+        <button type="button" class="btn btn-primary"  id = "modal_submit_button"  onclick="submit_modal('2by2')" >
+          Next <i class="fas fa-angle-right"></i>
+        </button>
+      </div>
+      <!-- <div class="modal-footer" >
+          <button type="button" class="btn btn-primary mr-auto"  id = "modal_submit_button"  onclick="submit_modal()">Submit</button>
+      </div> -->
+  </div>
+  </div>
+</div>
+<!-- NAME MODAL -->
+
+<div class="modal fade bd-example-modal-lg" id="name_modal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" style="margin: auto;">Create a Group</h5>
+        </div>
+      <div class="modal-body" >
+        <div style="text-align: center;">
+          <label for="tags">Enter Names: </label>
+          <input id="tags" ></input>
+        </div>
+        <div id="tags_area"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary mr-auto" data-dismiss="modal" onclick="customize_plot('2by2')">
+          <i class="fas fa-angle-left"></i> Back
+        </button>
+        <button class="btn btn-primary" data-bs-target="#name_modal" data-bs-toggle="modal" onclick="submit_name_modal()">
+          Submit <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LINK MODAL -->
+<div class="modal fade bd-example-modal-lg" id="link_modal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1" >
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" style="margin: auto;">Share Your Link</h5>
+        </div>
+      <div class="modal-body">
+        <div class="chart-container" id="chart-container" style="position: relative;  margin: auto; ">
+          <canvas id="simpleChart"></canvas>
+                <!-- Axis Labels -->
+      <p class="mini-axis-label" id="posx-label">  </p>
+      <p class="mini-axis-label" id="posy-label" > </p>
+      <p class="mini-axis-label" id="negx-label" > </p>
+      <p class="mini-axis-label" id="negy-label"> </p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div style="margin: auto;">
+          <p class="link-label">Link:</p> <a href="#" style="margin-right: 8px;" id="link_text"></a> 
+          <button class="copy-button" onclick="copy_link()" id="copy-button"> <i class="far fa-copy"></i> </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-sm-4">
+    <div class="card text-center">
+      <h5 class="card-header">
+        Pie Chart
+      </h5>
+      <div class="card-body">
+        <img id="modal_image" src="/assets/pie.png" style="height:15vw; padding-bottom: 10px;"/>
+        <br>
+        <a href="#" class="btn btn-primary">Select</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card text-center">
+      <h5 class="card-header">
+        2-by-2 Matrix
+      </h5>
+      <div class="card-body">
+        <img id="modal_image" src="/assets/logo.png" style="height:15vw; padding-bottom: 10px;"/>
+        <br>
+        <button class="btn btn-primary" onclick="customize_plot('2by2')">Select</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card text-center">
+      <h5 class="card-header">
+        Bar Graph
+      </h5>
+      <div class="card-body">
+        <img id="modal_image" src="/assets/bar.png" style="height:15vw; padding-bottom: 10px;"/>
+        <br>
+        <a href="#" class="btn btn-primary">Select</a>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<div class="row">
+  <div class="col-sm-4">
+    <div class="card text-center">
+      <h5 class="card-header">
+        Radar Chart
+      </h5>
+      <div class="card-body">
+        <img id="modal_image" src="/assets/radar.png" style="height:15vw; padding-bottom: 10px;"/>
+        <br>
+        <a href="#" class="btn btn-primary">Select</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card text-center">
+      <h5 class="card-header">
+        3-by-3 Matrix
+      </h5>
+      <div class="card-body">
+        <img id="modal_image" src="/assets/3by3.png" style="height:15vw; padding-bottom: 10px;"/>
+        <br>
+        <button class="btn btn-primary">Select</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="card text-center">
+      <h5 class="card-header">
+        Line Sliders
+      </h5>
+      <div class="card-body">
+        <img id="modal_image" src="/assets/line_sliders.png" style="height:15vw; padding-bottom: 10px;"/>
+        <br>
+        <a href="#" class="btn btn-primary">Select</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<span id="result"></span>
+
+<style>
+  .tag_item {
+    background-color: lightgray;
+    border-radius: 3px;
+    width: fit-content;
+    padding: 2px 5px;
+    margin: 5px;
+    display: inline-block;
+  }
+  .tag_item_delete:hover {
+    cursor:pointer;
+  }
+</style>
+
+<footer>
+  <%- include('../partials/footer'); %>
+</footer>
+
+
+<script>
+<%- include('../../public/js/create.js'); %>
+</script>
+</body>
+</html>

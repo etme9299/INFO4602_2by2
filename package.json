@@ -1,0 +1,23 @@
+{
+  "name": "2by2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "nodemon server.js",
+    "dev-env": "docker-compose down; docker-compose up --build -d",
+    "heroku": "heroku login; heroku container:login; heroku container:push web -a twoby2; heroku container:release web -a twoby2"
+  },
+  "keywords": [],
+  "author": "Ryan Slocum & Ethan Meyer",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.2",
+    "ejs": "^3.1.6",
+    "express": "^4.17.3",
+    "mongodb": "^4.4.1",
+    "mongoose": "^6.2.4",
+    "nodemon": "^2.0.15"
+  }
+}
